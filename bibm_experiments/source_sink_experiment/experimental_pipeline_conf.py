@@ -12,8 +12,8 @@ input_file = args.input_file
 
 conf_files = [
 #    "0.70_confidence.pkl",
-    "0.80_confidence.pkl",
-#    "0.85_confidence.pkl",
+#    "0.80_confidence.pkl",
+    "0.85_confidence.pkl",
 #    "0.90_confidence.pkl",
     "0.95_confidence.pkl",
 #    "0.99_confidence.pkl"
