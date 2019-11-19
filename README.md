@@ -9,15 +9,24 @@ considers all nodes as possible sources and sinks, and then uses confidence
 intervals on edges. Code to execute each experiment is located in their
 respective directories inside the bibm_experiments directory.
 
-To run an experiment, download all human data from
-https://zenodo.org/record/1460998#.XbsQU-dKgWp in data/rnaseq/human and
-put it in the data directory. Then, run experimental_pipeline.py to generate
-results in the results folder. Finally, run analyze_output.py to aggregate
-results and generate statistics.
-
 For example, to run the interval experiment on one data file, do:
 ```
 cd bibm_experiments/interval_experiment
-python experimental_pipeline.py 1.graph
+python experimental_pipeline.py 1_small.graph
 python analyze_output.py
 ```
+
+To run the full experiment, download all human data from
+https://zenodo.org/record/1460998#.XbsQU-dKgWp in data/rnaseq/human and
+put it in the data directory for the experiment you would like to run. For
+example, the interval experiment's data folder is located at
+
+```
+bibm_experiments/interval_experiment/data/
+```
+
+Then, run experimental_pipeline.py to generate
+results in the results folder. Finally, run analyze_output.py to aggregate
+results and generate statistics.
+
+
