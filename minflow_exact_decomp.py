@@ -7,8 +7,6 @@ import argparse
 import os
 import sys
 from flows.parser import read_instances
-from flows.parse_gill_output import create_graph_file
-from flows.parse_gill_output import create_truth_file
 from flows.computation_utils import *
 import pickle
 

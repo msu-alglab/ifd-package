@@ -7,8 +7,6 @@ import argparse
 import os
 import sys
 from flows.parser import read_instances
-from flows.parse_gill_output import create_graph_file
-from flows.parse_gill_output import create_truth_file
 import flows.computation_utils as utils
 import pickle
 
@@ -71,10 +69,8 @@ if __name__ == "__main__":
     # if this is a gill input, create Toboggan-style inputs
     if input_style == 'gill':
         # write .graph and .truth files from path file
-        create_graph_file(og_filename)
-        create_truth_file(og_filename)
-        filename = og_filename.split(".")[0] + ".graph"
-        graph_file = graph_file.split(".")[0] + ".graph"
+        pass
+        # todo: remove this option
     truth_file = graph_file.split(".")[0] + ".truth"
 
     print("Time before entering graph processing loop: {}".format(
