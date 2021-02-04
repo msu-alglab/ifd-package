@@ -8,6 +8,7 @@ import os
 import sys
 from flows.parser import read_instances
 import flows.computation_utils as utils
+from flows.ifd import InexactFlowInstance
 import pickle
 
 
@@ -29,15 +30,16 @@ if __name__ == "__main__":
 
     # define arguments
     parser = DefaultHelpParser()
-    parser.add_argument('file', help='A .graph file containing the input graph(s).')
-    parser.add_argument('confidence_filename', help="Filename of confidence" +
-    "interval file")
+    parser.add_argument('file',
+                        help='A .graph file containing the input graph(s).')
+    parser.add_argument('confidence_filename',
+                        help="Filename of confidence interval file")
     parser.add_argument('confidence_interval', help="Is this a conf int test?")
     parser.add_argument('input_style', help='An input style')
     parser.add_argument('output_file', help='An output filename.')
     parser.add_argument('wide', help='wide experiment or not')
-    parser.add_argument('-s', '--source_sink', help = 'source sink experiment or not',
-                            default='True')
+    parser.add_argument('-s', '--source_sink',
+                        help='source sink experiment or not', default='True')
     args = parser.parse_args()
 
     # parse arguments
@@ -92,7 +94,12 @@ if __name__ == "__main__":
         print("This graph is index {}".format(index))
         print("########################")
         # contract in-/out-degree 1 vertices
+        # this is where we could make an InexactFlowInstance object
         start_time = time.time()
+        ifd = InexactFlowInstance(graph, silent=False)
+        if ifd.is_trivial():
+            print("Trivial. Skipping this input.\n")
+            continue
         reduced, mapping = graph.contracted()
         print("Time to contract graph: {}".format(time.time() - start_time))
         # reduced is the graph after contractions;
@@ -105,7 +112,6 @@ if __name__ == "__main__":
         # record size of graph
         n_input = len(graph)
         m_input = len(list(graph.edges()))
-
 
         # set up and find maxflow problem
         start_time = time.time()
@@ -131,23 +137,24 @@ if __name__ == "__main__":
                 assert(found_flow)
         if found_flow:
             find_feasible_flow_time = time.time()-start_time
-            print("Time to find initial flow: {}".format(find_feasible_flow_time))
-
+            print("Time to find initial flow: {}".
+                  format(find_feasible_flow_time))
 
             # run heuristic 1
             start_time = time.time()
             if graph.get_num_zero_lower_bounds() > 0:
-                print("\nAt least one edge with lower bound 0. Running heuristic 1.")
+                print("\n>=1 edge wth lower bound 0. Running heuristic 1.")
                 heuristic_1_updates = graph.run_heuristic_1()
             else:
-                print("\nNo edges with lower bound 0, so skipping heuristic 1.")
+                print("\n0 edges with lower bound 0, so skipping heuristic 1.")
                 heuristic_1_updates = 0
             time_to_do_heuristic_1 = time.time() - start_time
             print("Time to run heuristic 1: {}".format(time_to_do_heuristic_1))
 
             start_time = time.time()
             graph.run_greedy_width()
-            print("Time to run greedy width: {}".format(time.time()-start_time))
+            print("Time to run greedy width: {}".
+                  format(time.time()-start_time))
 
             # get initial solution size
             init_k_pred = len(graph.get_paths())
@@ -179,7 +186,6 @@ if __name__ == "__main__":
             print("\nFinished pairwise splicing.")
             graph.print_paths()
 
-
             # get metrics
             found_k = graph.get_k()
             splices = graph.get_splices()
@@ -195,7 +201,8 @@ if __name__ == "__main__":
             graph.check_paths()
             graph.check_conservation_of_flow()
             check_time = time.time()-start_time
-            print("Time to check that solution is valid: {}".format(check_time))
+            print("Time to check that solution is valid: {}".
+                  format(check_time))
         else:
             # set variables to None that did not get set
             init_k_pred = 0
@@ -219,7 +226,8 @@ if __name__ == "__main__":
         print("\nWriting predicted paths to .predicted file.")
         predicted_filename = filename.replace(".graph", ".predicted")
         with open(predicted_filename, 'w') as f:
-            f.write("# graph number = {} name = {}\n".format(graphnumber, graphname))
+            f.write("# graph number = {} name = {}\n".
+                    format(graphnumber, graphname))
             paths = graph.get_paths()
             weights = graph.get_weights()
             for path, weight in zip(paths, weights):
@@ -232,9 +240,8 @@ if __name__ == "__main__":
         print("Finished instance.\n")
 
         # compute weighted jaccard
-        wj_sim, k_gt, k_pred = utils.compute_weighted_jaccard(predicted_filename,
-                                                            truth_file,
-                                                            index)
+        wj_sim, k_gt, k_pred = utils.compute_weighted_jaccard(
+            predicted_filename, truth_file, index)
         print("Weighted Jaccard Similarity is {}\n".format(wj_sim))
 
         results.append([str(wj_sim),
@@ -249,7 +256,7 @@ if __name__ == "__main__":
                         str(zero_intervals)])
     print("Overall time: {}".format(time.time()-overall_start_time))
 
-    #write results to file
+    # write results to file
     f = open(output_file, "w")
     for result in results:
         f.write(",".join(result) + "\n")
