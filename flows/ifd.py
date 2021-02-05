@@ -15,4 +15,4 @@ class InexactFlowInstance():
         self.reduced, self.mapping = graph.contracted()
 
     def is_trivial(self):
-        return self.reduced <= 1
+        return len(self.reduced) <= 1
