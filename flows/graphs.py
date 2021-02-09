@@ -1567,7 +1567,6 @@ class AdjList:
     def pairwise_rebalance(self):
         """Execute pairwise rebalancing (heuristic c)"""
         path_pairs = self.get_overlapping_path_pairs()
-        print(path_pairs)
         if len(path_pairs) > 0:
             pair = path_pairs.pop()
         else:

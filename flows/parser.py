@@ -7,7 +7,6 @@
 from flows.graphs import AdjList
 # python libs
 import re
-import os
 
 header_regex = re.compile('# graph number = ([0-9]*) name = (.*)')
 
@@ -26,7 +25,7 @@ def read_sgr(graph_file):
         return graph, None, 0
 
 
-def enumerate_graphs(graph_file, exact=True):
+def enumerate_graphs(graph_file, exact):
     def read_next_graph(f):
         header_line = f.readline()
 
