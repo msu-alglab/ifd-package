@@ -62,7 +62,7 @@ class AdjList:
                     self.arc_info[arc]["lower_bound"]) == 0:
                     has_zero = 1
             zeros.append(has_zero)
-        print(zeros)
+        # print(zeros)
         return(sum(zeros))
 
     def update_edge_weights(self):
@@ -310,7 +310,7 @@ class AdjList:
         """
         Find a greedy-width solution for the given flow graph.
         """
-        print("\nRunning greedy width to find an initial path solution.")
+        # print("\nRunning greedy width to find an initial path solution.")
         for arc in self.arc_info:
             self.arc_info[arc]["unexplained_flow"] = self.arc_info[arc]["weight"]
         tries = 0
@@ -365,7 +365,7 @@ class AdjList:
         for edge in shortest_path:
             self.arc_info[edge]["unexplained_flow"] -= flow
         self.paths.append(shortest_path)
-        print(shortest_path)
+        # print(shortest_path)
         self.weights.append(flow)
 
     def set_paths(self, paths):
@@ -1243,7 +1243,7 @@ class AdjList:
             #print("upper bounds: {}".format(upper_bounds))
             lb = max(lower_bounds)
             # in case no edges in here, make max of 5,000
-            print("There are no arcs in edges (triple)")
+            # print("There are no arcs in edges (triple)")
             ub = min(upper_bounds + [5000])
             return(lb, ub)
 
@@ -1359,7 +1359,7 @@ class AdjList:
                 rev = compute_rev(self.paths[triple[2]], self.paths[triple[1]])
                 overlap = rev + fwd - p3_len
                 if fwd + rev - p3_len >= 0:
-                    print("#    Triple {} meets overlap condition.".format(triple))
+                    # print("#    Triple {} meets overlap condition.".format(triple))
                     #print("fwd = {}, rev = {}, lap = {}".format(fwd, rev, overlap))
                     return(True, fwd, rev, overlap)
                 return(False, fwd, rev, overlap)
@@ -1434,13 +1434,13 @@ class AdjList:
 
                 # try to rebalance
                 if flow_condition(p1, p2, triple):
-                    print("Rebalance opportunity found. Now rebalancing.")
+                    # print("Rebalance opportunity found. Now rebalancing.")
                     self.rebalances += 1
                     return(True)
 
                 # try to splice and merge
                 if flow_condition(p_prime, p3, triple):
-                    print("Splice+merge opportunity found. Now splicing.")
+                    # print("Splice+merge opportunity found. Now splicing.")
                     self.splices += 1
                     return(True)
 
@@ -1461,11 +1461,10 @@ class AdjList:
         overall_start_time = time.time()
         # while there is an unchecked triple of paths p_i, p_j, p_k:
         perm_start_time = time.time()
-        print("Num paths: {}".format(len(self.paths)))
+        # print("Num paths: {}".format(len(self.paths)))
         triples = set(permutations(range(len(self.paths)),3))
-        print("Number triples: {}".format(len(triples)))
-        print("Time to calculate triples: {}".format(
-            time.time() - perm_start_time))
+        # print("Number triples: {}".format(len(triples)))
+        #print("Time to calculate triples: {}".format(time.time() - perm_start_time))
         checked_triples = set()
         iteration_count = 0
         while triples:
@@ -1477,10 +1476,10 @@ class AdjList:
                 triples = all_triples.difference(checked_triples)
             if timeout is not None:
                 if time.time() - overall_start_time > timeout:
-                    print("Iteration count: {}".format(iteration_count))
+                    # print("Iteration count: {}".format(iteration_count))
                     break
 
-        print("Iteration count: {}".format(iteration_count))
+        # print("Iteration count: {}".format(iteration_count))
 
     def get_overlapping_path_pairs(self):
         """Return all pairs of paths that overlap by index in self.paths."""
@@ -1514,8 +1513,8 @@ class AdjList:
         if len(upper_bounds) == 0:
             i = pair[0]
             j = pair[1]
-            print("Path i ({}): {}".format(i, self.paths[i]))
-            print("Path j ({}): {}".format(j, self.paths[j]))
+            # print("Path i ({}): {}".format(i, self.paths[i]))
+            # print("Path j ({}): {}".format(j, self.paths[j]))
         ub = min(upper_bounds + [5000])
         #print("lower bounds: {}".format(lower_bounds))
         #print("upper bounds: {}".format(upper_bounds))
@@ -1558,7 +1557,7 @@ class AdjList:
             # return the flow in the center
             bottom = max(L_overlap, L_wj)
             top = min(U_overlap, U_wj)
-            print(bottom, top)
+            # print(bottom, top)
             return int((bottom + top)/2)
         else:
             return None
@@ -1574,31 +1573,30 @@ class AdjList:
         while pair is not None:
             i = pair[0]
             j = pair[1]
-            print("Testing {},{}".format(i, j))
-            print("weight i: {}, weight j: {}".format(self.weights[i],
-            self.weights[j]))
+            # print("Testing {},{}".format(i, j))
+            # print("weight i: {}, weight j: {}".format(self.weights[i], self.weights[j]))
             p_i = self.paths[i]
             p_j = self.paths[j]
             p_i_alone = set(p_i).difference(set(p_j))
             p_j_alone = set(p_j).difference(set(p_i))
             overlap = set(p_i).intersection(set(p_j))
-            print("Finding bounds for i")
+            # print("Finding bounds for i")
             L_wi, U_wi = self.compute_pair_bounds(p_i_alone, pair)
-            print("Finding bounds for j")
+            # print("Finding bounds for j")
             L_wj, U_wj = self.compute_pair_bounds(p_j_alone, pair)
-            print("Finding bounds for overlap")
+            # print("Finding bounds for overlap")
             L_overlap, U_overlap = self.compute_pair_bounds(overlap, pair)
             w_j = self.find_wj(L_wi, U_wi, L_wj, U_wj, L_overlap, U_overlap)
             if w_j is not None:
                 # rebalance is possible
                 # set weight of j to w_j
-                print("Removing path {}".format(i))
-                print("W_j was {}".format(w_j))
-                print("Path i w={}  is {}".format(self.weights[i], p_i))
-                print("path j w={} is {}".format(self.weights[j], p_j))
-                print(("L_wi={}, U_wi={}, L_wj={}, U_wj={}, L_overlap={}," +\
-                            "U_overlap={}").format(L_wi, U_wi, L_wj, U_wj,
-                            L_overlap, U_overlap))
+                # print("Removing path {}".format(i))
+                # print("W_j was {}".format(w_j))
+                # print("Path i w={}  is {}".format(self.weights[i], p_i))
+                # print("path j w={} is {}".format(self.weights[j], p_j))
+#                 print(("L_wi={}, U_wi={}, L_wj={}, U_wj={}, L_overlap={}," +\
+#                             "U_overlap={}").format(L_wi, U_wi, L_wj, U_wj,
+#                             L_overlap, U_overlap))
                 self.weights[j] = w_j
                 # remove path i and weight j
                 del self.paths[i]
@@ -1611,7 +1609,7 @@ class AdjList:
                 # TODO: do this more efficiently.
                 path_pairs = self.get_overlapping_path_pairs()
 
-                print("Checking bounds")
+                # print("Checking bounds")
                 self.check_flow()
             # update current pair
             if path_pairs:
@@ -1636,7 +1634,7 @@ class AdjList:
 
     def get_potential_pw_splice_pairs(self):
         """Find all pairs of paths that share a node."""
-        self.print_out()
+        # self.print_out()
         path_pairs = []
         for i, path_1 in enumerate(self.paths):
             for j, path_2 in enumerate(self.paths):
@@ -1655,11 +1653,11 @@ class AdjList:
         p_i_nodes = self.get_path_nodes(p_i)[1:-1]
         p_j_nodes = self.get_path_nodes(p_j)[1:-1]
         # we will splice at least common node
-        print("Path we are attempting to splice")
-        print(p_i, p_j)
-        print(p_i_nodes, p_j_nodes)
-        if len(set(p_i_nodes).intersection(set(p_j_nodes))) == 0:
-            print("no overlap")
+        # print("Path we are attempting to splice")
+        # print(p_i, p_j)
+        # print(p_i_nodes, p_j_nodes)
+        # if len(set(p_i_nodes).intersection(set(p_j_nodes))) == 0:
+        #     print("no overlap")
         common_node = min(set(p_i_nodes).intersection(set(p_j_nodes)))
         # find where p_i gets to this node
         index_i = 0
@@ -1684,8 +1682,8 @@ class AdjList:
         """Execute pairwise splice."""
         # If two paths share a node, consider splicing them.
         path_pairs = self.get_potential_pw_splice_pairs()
-        print("Weights: {}".format(self.weights))
-        print("Path pairs for splicing is: {}".format(path_pairs))
+        # print("Weights: {}".format(self.weights))
+        # print("Path pairs for splicing is: {}".format(path_pairs))
         if len(path_pairs) > 0:
             pair = path_pairs.pop()
         else:
@@ -1699,19 +1697,20 @@ class AdjList:
             p_i_alone = set(p_i).difference(set(p_j))
             p_j_alone = set(p_j).difference(set(p_i))
             overlap = set(p_i).intersection(set(p_j))
-            print("Examining pair ({},{})".format(i,j))
+            # print("Examining pair ({},{})".format(i,j))
             L_wi, U_wi = self.compute_pair_bounds(p_i_alone, pair)
             L_wj, U_wj = self.compute_pair_bounds(p_j_alone, pair)
             L_overlap, U_overlap = self.compute_pair_bounds(overlap, pair)
             w_j = self.find_wj(L_wi, U_wi, L_wj, U_wj, L_overlap, U_overlap)
             if w_j is not None:
-                print("This pair can be spliced.")
+                # print("This pair can be spliced.")
                 # splice is possible
                 # replace jth path with p_j with weight w_j
                 # check whether p_j is in paths already. if yes, just increment
                 # weight.
                 if p_j in self.paths:
-                    print("P_j is in paths")
+                    # print("P_j is in paths")
+                    pass
                 self.paths[j] = p_j
                 self.weights[j] = w_j
                 # remove path i and weight j

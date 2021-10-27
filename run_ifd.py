@@ -31,29 +31,28 @@ if __name__ == "__main__":
     results = []
 
     # Iterate over every graph-instance inside the input file and solve
-    print(graph_file)
-    for graphdata, index in read_instances(graph_file, exact=False):
-        graph_start_time = time.time()
-        graph, graphname, graphnumber = graphdata
-        print("########################")
-        print("Beginning inexact flow decomposition for graph {}".format(
-                    graphname))
-        print("This graph is index {}".format(index))
-        print("########################")
-        # contract in-/out-degree 1 vertices
-        start_time = time.time()
-        ifd = InexactFlowInstance(graph, silent=False)
-        if ifd.is_trivial():
-            print("Trivial. Skipping this input.\n")
-            continue
-        print("")
+    predicted_filename = graph_file.replace(".graph", ".predicted")
+    with open(predicted_filename, 'w') as f:
+        for graphdata, index in read_instances(graph_file, exact=False):
+            graph_start_time = time.time()
+            graph, graphname, graphnumber = graphdata
+            print("########################")
+            print("Beginning inexact flow decomposition for graph {}".format(
+                        graphname))
+            print("This graph is index {}".format(index))
+            print("########################")
+            # contract in-/out-degree 1 vertices
+            start_time = time.time()
+            ifd = InexactFlowInstance(graph, silent=False)
+            if ifd.is_trivial():
+                print("Trivial. Skipping this input.\n")
+                continue
+            print("")
 
-        ifd.solve()
+            ifd.solve()
 
-        # write predicted paths to file
-        print("\nWriting predicted paths to .predicted file.")
-        predicted_filename = graph_file.replace(".graph", ".predicted")
-        with open(predicted_filename, 'w') as f:
+            # write predicted paths to file
+            print("\nWriting predicted paths to .predicted file.")
             f.write("# graph number = {} name = {}\n".
                     format(graphnumber, graphname))
             paths = ifd.graph.get_paths()
@@ -65,6 +64,6 @@ if __name__ == "__main__":
                 f.write(" ".join([str(x) for x in [weight] + node_seq]))
                 f.write("\n")
 
-        print("Finished instance.\n")
+            print("Finished instance.\n")
 
     print("Overall time: {}".format(time.time()-overall_start_time))
