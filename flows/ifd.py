@@ -46,19 +46,18 @@ class InexactFlowInstance():
 
             start_time = time.time()
             self.graph.run_greedy_width()
-            # print("Time to run greedy width: {}".
-            #       format(time.time()-start_time))
+            # print("Time to run greedy width: {}".format(time.time()-start_time))
 
             # get initial solution size
             init_k_pred = len(self.graph.get_paths())
 
             # run rebalancing + splice and merge
-            # print("\nStarting path rebalancing + splice/merge.")
+            print("\nStarting path rebalancing + splice/merge.")
             start_time = time.time()
-            self.graph.path_splice()
+            #self.graph.path_splice()
             splice_time = time.time() - start_time
             # print("Time to rebalance/splice paths: {}".format(splice_time))
-            # print("\nFinished rebalancing/splicing.")
+            print("\nFinished rebalancing/splicing.")
             # self.graph.print_paths()
 
             #print("\nStarting pairwise rebalancing.")

@@ -1244,7 +1244,7 @@ class AdjList:
             lb = max(lower_bounds)
             # in case no edges in here, make max of 5,000
             # print("There are no arcs in edges (triple)")
-            ub = min(upper_bounds + [5000])
+            ub = min(upper_bounds + [5000000])
             return(lb, ub)
 
 
@@ -1308,9 +1308,9 @@ class AdjList:
             # examine every possible point
             current_dist_to_edge = -1
             point = (0,0)
-            #print("w3 range: [{}, {}]".format(L_w3, U_w3))
-            #print("w' range: [{}, {}]".format(L_wprime, U_wprime))
-            #print("overlap range: [{},{}]".format(L_overlap, U_overlap))
+            # print("w3 range: [{}, {}]".format(L_w3, U_w3))
+            # print("w' range: [{}, {}]".format(L_wprime, U_wprime))
+            # print("overlap range: [{},{}]".format(L_overlap, U_overlap))
             for y in range(L_w3, U_w3 + 1):
                 #print("y={}".format(y))
                 LH_bound = max(L_wprime, L_overlap - y)
@@ -1469,6 +1469,7 @@ class AdjList:
         iteration_count = 0
         while triples:
             iteration_count += 1
+            # print(iteration_count)
             triple = triples.pop()
             checked_triples.add(triple)
             if attempt_splice(triple):
@@ -1476,7 +1477,7 @@ class AdjList:
                 triples = all_triples.difference(checked_triples)
             if timeout is not None:
                 if time.time() - overall_start_time > timeout:
-                    # print("Iteration count: {}".format(iteration_count))
+                    print("Iteration count: {}".format(iteration_count))
                     break
 
         # print("Iteration count: {}".format(iteration_count))
